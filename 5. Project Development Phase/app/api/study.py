@@ -222,3 +222,88 @@ async def learning_recommendation_api(request: Request, topic: str = Query(...))
         return {"topic": topic, "recommendation": recommendation}
     finally:
         db.close()
+
+@router.get("/history")
+async def get_study_history(request: Request, limit: int = 20):
+    """Retrieve the recent study history of queries and AI responses for the active user."""
+    db = get_db_session()
+    try:
+        user = get_current_user_from_request(request, db)
+        queries = (
+            db.query(models.UserQuery)
+            .filter(models.UserQuery.user_id == user.user_id)
+            .order_by(models.UserQuery.created_at.desc())
+            .limit(limit)
+            .all()
+        )
+        history_list = []
+        for q in queries:
+            resp_text = q.ai_response.response_text if q.ai_response else ""
+            model_used = q.ai_response.model_used if q.ai_response else "system"
+            history_list.append({
+                "query_id": q.query_id,
+                "query_type": q.query_type,
+                "query_text": q.query_text,
+                "response_text": resp_text,
+                "model_used": model_used,
+                "created_at": q.created_at.strftime("%b %d, %Y • %I:%M %p") if q.created_at else ""
+            })
+        return {"history": history_list}
+    finally:
+        db.close()
+
+@router.delete("/history/{query_id}")
+async def delete_history_item(request: Request, query_id: int):
+    """Delete a single query from user history."""
+    db = get_db_session()
+    try:
+        user = get_current_user_from_request(request, db)
+        item = db.query(models.UserQuery).filter(
+            models.UserQuery.query_id == query_id,
+            models.UserQuery.user_id == user.user_id
+        ).first()
+        if not item:
+            return JSONResponse(status_code=404, content={"error": "Item not found"})
+        db.delete(item)
+        db.commit()
+        return {"message": "History item deleted successfully"}
+    finally:
+        db.close()
+
+@router.post("/clear-history")
+async def clear_all_history(request: Request):
+    """Clear all study history for the logged in user."""
+    db = get_db_session()
+    try:
+        user = get_current_user_from_request(request, db)
+        db.query(models.UserQuery).filter(models.UserQuery.user_id == user.user_id).delete()
+        db.commit()
+        return {"message": "All history cleared successfully"}
+    finally:
+        db.close()
+
+@router.get("/stats")
+async def get_study_stats(request: Request):
+    """Retrieve learning statistics and counts for the user dashboard."""
+    db = get_db_session()
+    try:
+        user = get_current_user_from_request(request, db)
+        total_queries = db.query(models.UserQuery).filter(models.UserQuery.user_id == user.user_id).count()
+        qa_count = db.query(models.UserQuery).filter(models.UserQuery.user_id == user.user_id, models.UserQuery.query_type == "QnA").count()
+        explain_count = db.query(models.UserQuery).filter(models.UserQuery.user_id == user.user_id, models.UserQuery.query_type == "Explanation").count()
+        summary_count = db.query(models.UserQuery).filter(models.UserQuery.user_id == user.user_id, models.UserQuery.query_type == "Summary").count()
+        quiz_count = db.query(models.UserQuery).filter(models.UserQuery.user_id == user.user_id, models.UserQuery.query_type == "Quiz").count()
+        roadmap_count = db.query(models.UserQuery).filter(models.UserQuery.user_id == user.user_id, models.UserQuery.query_type == "Recommendation").count()
+
+        return {
+            "total_queries": total_queries,
+            "qa_count": qa_count,
+            "explain_count": explain_count,
+            "summary_count": summary_count,
+            "quiz_count": quiz_count,
+            "roadmap_count": roadmap_count,
+            "user_name": user.name
+        }
+    finally:
+        db.close()
+

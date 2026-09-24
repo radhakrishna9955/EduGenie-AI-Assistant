@@ -119,14 +119,19 @@ async def register_user(request: Request):
         # Trigger OTP send
         sent_via_smtp = send_otp_email(email, generated_otp)
         
-        if not sent_via_smtp:
-            pending_registrations.pop(email, None)
-            return JSONResponse(status_code=500, content={"error": "Unable to send verification email. Please try again later."})
+        print(f"\n=======================================================")
+        print(f"🔑 [EduGenie Verification OTP] For: {email} -> CODE: {generated_otp}")
+        print(f"=======================================================\n")
+        
+        if sent_via_smtp:
+            msg = "Verification OTP has been sent to your email. Please check your inbox."
+        else:
+            msg = f"Email delivery unconfigured. Your Verification Code is: <b style='color:var(--brand-cyan); font-size:1.1rem;'>{generated_otp}</b>"
             
         return {
             "verification_required": True,
             "email": email,
-            "message": "Verification OTP has been sent. Please check your email inbox."
+            "message": msg
         }
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": f"Registration initiation failed: {str(e)}"})
@@ -198,15 +203,21 @@ async def resend_registration_otp(request: Request):
         
         # Send
         sent_via_smtp = send_otp_email(email, new_otp)
+        print(f"\n=======================================================")
+        print(f"🔑 [EduGenie Resent OTP] For: {email} -> CODE: {new_otp}")
+        print(f"=======================================================\n")
         
-        if not sent_via_smtp:
-            return JSONResponse(status_code=500, content={"error": "Unable to send verification email. Please try again later."})
+        if sent_via_smtp:
+            msg = "A new verification OTP has been sent. Please check your email."
+        else:
+            msg = f"Your new Verification Code is: <b style='color:var(--brand-cyan); font-size:1.1rem;'>{new_otp}</b>"
             
         return {
-            "message": "A new verification OTP has been sent. Please check your email."
+            "message": msg
         }
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": f"Resending OTP failed: {str(e)}"})
+
 
 @router.post("/login")
 async def login_user(request: Request, response: Response):

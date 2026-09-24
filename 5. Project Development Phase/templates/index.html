@@ -3,145 +3,179 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EduGenie — Your AI Study Partner</title>
-  <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=3.0">
+  <title>EduGenie — Next-Gen AI Study Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v=4.0">
 </head>
 <body>
+
+  <!-- ============================================================ -->
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <!-- ============================================================ -->
+  <div id="toastContainer" class="toast-container"></div>
 
   <!-- ============================================================ -->
   <!-- GLOBAL HEADER NAVBAR -->
   <!-- ============================================================ -->
   <header class="top-nav">
     <div class="top-nav-container">
-      <a href="#" onclick="goHome(event)" class="logo"><img src="{{ url_for('static', path='edu_robot_logo_transparent.png') }}" alt="EduGenie Logo" style="height: 38px; width: auto;"></a>
+      <a href="#" onclick="goHome(event)" class="logo">
+        <img src="{{ url_for('static', path='edu_robot_logo_transparent.png') }}" alt="EduGenie Logo">
+        <span class="logo-text-gradient">EduGenie</span>
+      </a>
       
       <ul class="nav-links">
-        <li><a onclick="handleNavClick('home')" class="nav-link">Home</a></li>
+        <li><a onclick="handleNavClick('home')" class="nav-link active">Home</a></li>
         <li><a onclick="handleNavClick('features')" class="nav-link">Features</a></li>
-        <li><a onclick="handleNavClick('about')" class="nav-link">About Us</a></li>
+        <li><a onclick="handleNavClick('about')" class="nav-link">Architecture</a></li>
         <li><a onclick="handleNavClick('team')" class="nav-link">Team</a></li>
       </ul>
       
       <div class="auth-section">
-        <!-- Logged out states -->
-        <span id="headerLoggedOut" style="display: flex; align-items: center;">
-          <a onclick="openAuthModal('login')" class="login-link-header">Login</a>
-          <button onclick="openAuthModal('register')" class="btn-signup-header" style="margin-left: 15px;">Sign Up</button>
+        <!-- Logged out state -->
+        <span id="headerLoggedOut" style="display: flex; align-items: center; gap: 8px;">
+          <a onclick="openAuthModal('login')" class="login-link-header">Sign In</a>
+          <button onclick="openAuthModal('register')" class="btn-signup-header">Get Started Free</button>
         </span>
         
-        <!-- Logged in states -->
-        <span id="headerLoggedIn" style="display: none; align-items: center; gap: 15px;">
-          <span class="user-welcome">Welcome, <strong id="authName"></strong>!</span>
-          <span id="guestBadge" class="guest-badge" style="display: none;">Guest Mode Active</span>
-          <button onclick="toggleWorkspaceView(true)" class="btn btn-sm" id="btnGoToWorkspace" style="background: var(--accent-primary); border: none; font-weight: 600;">Workspace</button>
+        <!-- Logged in state -->
+        <span id="headerLoggedIn" style="display: none; align-items: center; gap: 12px;">
+          <span class="user-welcome">👋 <strong id="authName">Student</strong></span>
+          <span id="guestBadge" class="guest-badge" style="display: none;">Guest Mode</span>
+          <button onclick="toggleWorkspaceView(true)" class="btn btn-sm" id="btnGoToWorkspace">🚀 Workspace</button>
           <button onclick="logout()" class="btn btn-sm btn-outline">Sign Out</button>
         </span>
         
         <!-- Theme Toggle -->
-        <button id="themeToggleBtn" onclick="toggleTheme()" class="btn btn-sm btn-outline" style="border-radius: 50%; padding: 0; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-left: 5px;">🌙</button>
+        <button id="themeToggleBtn" onclick="toggleTheme()" class="btn btn-sm btn-outline" style="border-radius: 50%; padding: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-left: 4px;" title="Toggle Theme">🌙</button>
       </div>
     </div>
   </header>
 
   <!-- ============================================================ -->
-  <!-- LANDING PAGE (Shown when Logged Out or Viewing Landing Page) -->
+  <!-- LANDING PAGE (Shown when viewing landing page) -->
   <!-- ============================================================ -->
-  <div id="landingPage" style="display: none;">
+  <div id="landingPage">
     <canvas id="particlesCanvas"></canvas>
     
     <!-- Hero Section -->
     <section class="landing-section hero-container" id="homeSection">
       <div class="hero-text-side">
-        <h1 class="landing-hero-title">Your AI-Powered Study Companion</h1>
-        <p class="landing-hero-subtitle">EduGenie blends high-performance cloud AI with private local models to provide instant Q&As, detailed summaries, adaptive concept explanations, quizzes, and roadmap recommendations tailored for you.</p>
-        <button onclick="handleHeroCTA()" class="btn-get-started">Get Started</button>
+        <div class="hero-badge">✨ Hybrid AI Learning Platform 2026</div>
+        <h1 class="landing-hero-title">Elevate Your Learning with AI Intelligence</h1>
+        <p class="landing-hero-subtitle">EduGenie unites cutting-edge cloud reasoning with efficient local neural networks to deliver instant Q&A, crystal-clear concept breakdowns, smart summaries, adaptive quizzes, and curated masterclass roadmaps.</p>
+        <div class="hero-cta-group">
+          <button onclick="handleHeroCTA()" class="btn-get-started">
+            <span>Launch AI Workspace</span>
+            <span>⚡</span>
+          </button>
+          <button onclick="handleNavClick('features')" class="btn btn-outline" style="padding: 16px 28px; font-size: 1.02rem;">
+            Explore AI Tools 💡
+          </button>
+        </div>
       </div>
       <div class="hero-media-side">
-        <img src="{{ url_for('static', path='edu_robot_logo_transparent.png') }}" alt="EduGenie Chatbot Logo" class="landing-robot-img">
+        <img src="{{ url_for('static', path='edu_robot_logo_transparent.png') }}" alt="EduGenie AI Bot" class="landing-robot-img">
       </div>
     </section>
 
     <!-- Features Showcase Section -->
     <section class="landing-section" id="featuresSection">
-      <h2 class="section-title">Core AI Learning Tools</h2>
-      <p class="section-subtitle">Unlock private, adaptive learning utilities crafted to accelerate your comprehension and retain knowledge effectively.</p>
+      <h2 class="section-title">5 Core AI Learning Powerhouses</h2>
+      <p class="section-subtitle">Engineered specifically for university students, researchers, and self-taught developers to learn twice as fast.</p>
       
       <div class="features-showcase-grid">
         <!-- Card 1: Q&A -->
         <div class="feature-showcase-card">
           <div>
             <span class="feature-icon-wrapper">💬</span>
-            <h3 class="feature-card-title">Instant Q&A</h3>
-            <p class="feature-card-desc">Ask your toughest study questions and get fast, accurate explanations backed by Gemini 2.5 Flash.</p>
+            <h3 class="feature-card-title">Instant Academic Q&A</h3>
+            <p class="feature-card-desc">Ask complex academic questions in math, physics, engineering, or computing and get instant, well-formatted answers backed by Gemini 2.5 Flash.</p>
           </div>
-          <button onclick="handleFeatureClick('qa')" class="btn-feature-try">Try Q&A</button>
+          <button onclick="handleFeatureClick('qa')" class="btn-feature-try">Launch Q&A →</button>
         </div>
         
         <!-- Card 2: Concept Explainer -->
         <div class="feature-showcase-card">
           <div>
             <span class="feature-icon-wrapper">💡</span>
-            <h3 class="feature-card-title">Concept Explainer</h3>
-            <p class="feature-card-desc">Need a topic broken down step-by-step? Get simplified local explanations powered by LaMini-Flan-T5.</p>
+            <h3 class="feature-card-title">Deep Concept Explainer</h3>
+            <p class="feature-card-desc">Break down challenging theories into intuitive, step-by-step mechanisms, real-world analogies, and foundational proofs using LaMini-Flan-T5.</p>
           </div>
-          <button onclick="handleFeatureClick('explain')" class="btn-feature-try">Try Explainer</button>
+          <button onclick="handleFeatureClick('explain')" class="btn-feature-try">Launch Explainer →</button>
         </div>
 
         <!-- Card 3: Summarizer -->
         <div class="feature-showcase-card">
           <div>
             <span class="feature-icon-wrapper">📝</span>
-            <h3 class="feature-card-title">Text Summarizer</h3>
-            <p class="feature-card-desc">Paste long textbook passages or documents and condense them into structured, readable key points.</p>
+            <h3 class="feature-card-title">Intelligent Summarizer</h3>
+            <p class="feature-card-desc">Condense lengthy academic papers, textbook chapters, or lecture transcripts into actionable bullet points, key themes, and study tips.</p>
           </div>
-          <button onclick="handleFeatureClick('summarize')" class="btn-feature-try">Try Summarizer</button>
+          <button onclick="handleFeatureClick('summarize')" class="btn-feature-try">Launch Summarizer →</button>
         </div>
 
         <!-- Card 4: Quiz Generator -->
         <div class="feature-showcase-card">
           <div>
             <span class="feature-icon-wrapper">✏️</span>
-            <h3 class="feature-card-title">Quiz Generator</h3>
-            <p class="feature-card-desc">Test your understanding by generating multiple-choice quizzes on any specific topic instantly.</p>
+            <h3 class="feature-card-title">Interactive MCQ Quizzer</h3>
+            <p class="feature-card-desc">Generate rigorous multiple-choice assessments with immediate answer validation, conceptual rationales, and live score calculations.</p>
           </div>
-          <button onclick="handleFeatureClick('quiz')" class="btn-feature-try">Try Quiz</button>
+          <button onclick="handleFeatureClick('quiz')" class="btn-feature-try">Launch Quizzer →</button>
         </div>
 
         <!-- Card 5: Learning Roadmap -->
         <div class="feature-showcase-card">
           <div>
             <span class="feature-icon-wrapper">🗺️</span>
-            <h3 class="feature-card-title">Learning Roadmap</h3>
-            <p class="feature-card-desc">Get tailored difficulty recommendations and study path recommendations for complex skills.</p>
+            <h3 class="feature-card-title">Adaptive Learning Paths</h3>
+            <p class="feature-card-desc">Type in any technology or domain to receive a phased, step-by-step curriculum with milestones, curated books, free courses, and projects.</p>
           </div>
-          <button onclick="handleFeatureClick('recommend')" class="btn-feature-try">Try Roadmap</button>
+          <button onclick="handleFeatureClick('recommend')" class="btn-feature-try">Launch Roadmap →</button>
+        </div>
+
+        <!-- Card 6: Study Notebook -->
+        <div class="feature-showcase-card">
+          <div>
+            <span class="feature-icon-wrapper">📚</span>
+            <h3 class="feature-card-title">Personal Study Notebook</h3>
+            <p class="feature-card-desc">All your queries, generated roadmaps, summaries, and quiz attempts are permanently indexed in SQLite for effortless review anytime.</p>
+          </div>
+          <button onclick="handleFeatureClick('history')" class="btn-feature-try">Open Notebook →</button>
         </div>
       </div>
     </section>
 
-    <!-- About Us Section -->
+    <!-- Architecture Section -->
     <section class="landing-section" id="aboutSection">
       <div class="about-container">
         <div class="about-text-side">
-          <h2 class="section-title" style="text-align: left; margin-bottom: 25px;">Why EduGenie?</h2>
-          <p>EduGenie is a cutting-edge educational assistant built to support students' learning paths. We recognize that sometimes you need the power of state-of-the-art cloud language models, while other times you require speed and resource efficiency.</p>
-          <p>By leveraging a hybrid architecture, EduGenie executes heavy reasoning tasks on Gemini in the cloud while delegating concept explanations to a lightweight, dedicated model running locally. This makes advanced AI tutoring more accessible, cost-effective, and fast.</p>
+          <h2 class="section-title" style="text-align: left; margin-bottom: 20px;">Why EduGenie? Hybrid AI Architecture</h2>
+          <p>Modern educational assistants often struggle with latency or privacy bottlenecks. EduGenie addresses this with a <strong>Hybrid Cloud + Edge AI</strong> infrastructure.</p>
+          <p>High-reasoning synthesis tasks leverage Google's cutting-edge Gemini 2.5 Flash API in the cloud, while sensitive concept explanations and local processing run on Hugging Face's lightweight LaMini-Flan-T5 model right on your machine.</p>
         </div>
         <div class="about-visual-side">
-          <div class="architecture-badge">Hybrid AI Architecture</div>
+          <div class="architecture-badge">⚡ Next-Gen System Stack</div>
           <ul class="architecture-list">
             <li class="architecture-item">
               <span class="architecture-icon">☁️</span>
               <div>
-                <h4 class="architecture-title">Cloud AI (Gemini 2.5 Flash)</h4>
-                <p class="architecture-desc">Powers real-time Q&A, adaptive quizzes, summarizations, and complex resource roadmap recommendation trees.</p>
+                <h4 class="architecture-title">Cloud AI (Google Gemini 2.5 Flash)</h4>
+                <p class="architecture-desc">Powers ultra-fast contextual Q&A, multi-stage summarization, structured JSON quiz compilation, and progressive roadmaps.</p>
               </div>
             </li>
             <li class="architecture-item">
               <span class="architecture-icon">💻</span>
               <div>
-                <h4 class="architecture-title">Local AI (LaMini-Flan-T5-783M)</h4>
-                <p class="architecture-desc">Executes fast, resource-friendly conceptual explanations locally on your CPU/GPU.</p>
+                <h4 class="architecture-title">Local Edge AI (LaMini-Flan-T5-783M)</h4>
+                <p class="architecture-desc">Executes fast, resource-friendly conceptual explanations locally with zero external API dependencies.</p>
+              </div>
+            </li>
+            <li class="architecture-item">
+              <span class="architecture-icon">🛡️</span>
+              <div>
+                <h4 class="architecture-title">FastAPI + SQLAlchemy SQLite Database</h4>
+                <p class="architecture-desc">Persistent multi-user study sessions, secure SHA-256 auth, cookie sessions, and instant full-text query history retention.</p>
               </div>
             </li>
           </ul>
@@ -151,48 +185,62 @@
 
     <!-- Team Section -->
     <section class="landing-section" id="teamSection">
-      <h2 class="section-title">Meet Our Team</h2>
-      <p class="section-subtitle">The dedicated full-stack developers and AI researchers behind EduGenie.</p>
+      <h2 class="section-title">Meet the Engineering Team</h2>
+      <p class="section-subtitle">The dedicated engineers and AI developers behind the EduGenie Assistant platform.</p>
       
-      <div class="team-grid">
-        <!-- Team 1 -->
+      <div class="team-grid" style="max-width: 960px; margin: 0 auto;">
+        <!-- Member 1: Radha Krishna (Team Lead) -->
         <div class="team-card">
-          <div class="team-avatar-placeholder">P</div>
-          <h3 class="team-name">Preetham</h3>
-        </div>
-        <!-- Team 2 -->
-        <div class="team-card">
-          <div class="team-avatar-placeholder">D</div>
-          <h3 class="team-name">Divyateja</h3>
-        </div>
-        <!-- Team 3 -->
-        <div class="team-card">
-          <div class="team-avatar-placeholder">P</div>
-          <h3 class="team-name">Pavan</h3>
-        </div>
-        <!-- Team 4 -->
-        <div class="team-card">
-          <div class="team-avatar-placeholder">R</div>
+          <div class="team-avatar avatar-radhakrishna">R</div>
           <h3 class="team-name">Radha Krishna</h3>
+          <div class="team-role" style="color: #f59e0b; font-weight: 700;">⭐ Team Lead & Full-Stack Lead</div>
+          <div class="team-skills-tags">
+            <span class="skill-tag">Team Lead</span>
+            <span class="skill-tag">FastAPI</span>
+            <span class="skill-tag">UI/UX Design</span>
+            <span class="skill-tag">Architecture</span>
+          </div>
         </div>
-        <!-- Team 5 -->
+
+        <!-- Member 2: Yashwanth -->
         <div class="team-card">
-          <div class="team-avatar-placeholder">Y</div>
+          <div class="team-avatar avatar-yashwanth">Y</div>
           <h3 class="team-name">Yashwanth</h3>
+          <div class="team-role">Database Architect & Backend Engineer</div>
+          <div class="team-skills-tags">
+            <span class="skill-tag">SQLAlchemy</span>
+            <span class="skill-tag">SQLite</span>
+            <span class="skill-tag">Auth Security</span>
+            <span class="skill-tag">REST APIs</span>
+          </div>
+        </div>
+
+        <!-- Member 3: Shanker -->
+        <div class="team-card">
+          <div class="team-avatar avatar-shanker">S</div>
+          <h3 class="team-name">Shanker</h3>
+          <div class="team-role">AI & Cloud DevOps Engineer</div>
+          <div class="team-skills-tags">
+            <span class="skill-tag">Gemini 2.5 API</span>
+            <span class="skill-tag">NLP / Transformers</span>
+            <span class="skill-tag">Deployment</span>
+            <span class="skill-tag">CI/CD</span>
+          </div>
         </div>
       </div>
     </section>
   </div>
 
+
   <!-- ============================================================ -->
-  <!-- DEDICATED AUTHENTICATION MODAL (Shown as Popup) -->
+  <!-- DEDICATED AUTHENTICATION MODAL -->
   <!-- ============================================================ -->
   <div id="authModal" class="modal-overlay">
     <div class="auth-card">
       <button onclick="closeAuthModal()" class="modal-close-btn" aria-label="Close modal">&times;</button>
       <div class="auth-card-header">
         <div class="auth-logo">EduGenie 🧠✨</div>
-        <p class="auth-subtitle" id="authSubtitleText">Sign In to access all features!</p>
+        <p class="auth-subtitle" id="authSubtitleText">Sign In to access all AI study tools!</p>
       </div>
 
       <div class="auth-tabs">
@@ -205,15 +253,15 @@
         <form onsubmit="event.preventDefault(); login();">
           <div class="auth-form-group">
             <label for="loginEmail">Email Address</label>
-            <input type="email" id="loginEmail" placeholder="name@domain.com" required>
+            <input type="email" id="loginEmail" placeholder="student@university.edu" required>
           </div>
           <div class="auth-form-group">
             <label for="loginPassword">Password</label>
             <input type="password" id="loginPassword" placeholder="••••••••" required>
           </div>
-          <button type="submit" class="btn btn-full">Sign In</button>
+          <button type="submit" class="btn btn-full">Sign In to Workspace</button>
         </form>
-        <div id="loginError" class="auth-error"></div>
+        <div id="loginError" style="color: var(--color-error); font-size: 0.88rem; margin-top: 10px; text-align: center; font-weight: 500;"></div>
       </div>
 
       <!-- Register Panel -->
@@ -222,11 +270,11 @@
           <div id="registerFieldsContainer">
             <div class="auth-form-group">
               <label for="regName">Full Name</label>
-              <input type="text" id="regName" placeholder="John Doe" required>
+              <input type="text" id="regName" placeholder="Radha Krishna" required>
             </div>
             <div class="auth-form-group">
               <label for="regEmail">Email Address</label>
-              <input type="email" id="regEmail" placeholder="name@domain.com" required>
+              <input type="email" id="regEmail" placeholder="student@university.edu" required>
             </div>
             <div class="auth-form-group">
               <label for="regPassword">Password</label>
@@ -241,38 +289,43 @@
           
           <div id="registerOtpContainer" style="display: none;">
             <div class="auth-form-group">
-              <label for="regOtp">Verification OTP</label>
+              <label for="regOtp">6-Digit Verification OTP</label>
               <input type="text" id="regOtp" placeholder="Enter 6-digit Code" autocomplete="one-time-code">
             </div>
-            <button type="button" onclick="verifyRegistrationOTP()" class="btn btn-full" style="margin-bottom: 12px;">Verify & Create Account</button>
-            <button type="button" onclick="resendRegistrationOTP()" class="btn btn-full btn-outline">Resend OTP</button>
+            <button type="button" onclick="verifyRegistrationOTP()" class="btn btn-full" style="margin-bottom: 10px;">Verify & Start</button>
+            <button type="button" onclick="resendRegistrationOTP()" class="btn btn-full btn-outline">Resend OTP Code</button>
           </div>
         </form>
-        <div id="registerStatus" class="auth-status" style="margin-top: 15px; text-align: center;"></div>
+        <div id="registerStatus" style="margin-top: 12px; font-size: 0.88rem; text-align: center; font-weight: 500;"></div>
       </div>
 
       <div class="auth-card-footer">
         <div class="divider">
-          <span class="divider-text">or</span>
+          <span class="divider-text">or rapid test</span>
         </div>
-        <button onclick="loginAsGuest()" class="btn btn-full btn-outline btn-guest">Continue as Guest</button>
+        <button onclick="loginAsGuest()" class="btn btn-full btn-outline">⚡ Instant Guest Access</button>
       </div>
     </div>
   </div>
 
   <!-- ============================================================ -->
-  <!-- SAAS WORKSPACE DASHBOARD (Gated & Tabbed Left Sidebar) -->
+  <!-- SAAS WORKSPACE DASHBOARD -->
   <!-- ============================================================ -->
   <div id="workspaceDashboard" style="display: none;">
     <div class="workspace-container">
       <!-- Left Sidebar Nav -->
       <aside class="workspace-sidebar">
         <div>
-          <div class="logo" style="margin-bottom: 30px; font-size: 1.35rem;">Workspace 🧠</div>
+          <div class="workspace-sidebar-header">
+            <a href="#" onclick="goHome(event)" class="logo" style="font-size: 1.2rem;">
+              <span class="logo-text-gradient">EduGenie OS 🧠</span>
+            </a>
+          </div>
+
           <ul class="workspace-nav">
             <li>
               <button onclick="switchWorkspaceTab('qa')" id="ws-nav-qa" class="workspace-nav-btn active">
-                <span>💬</span> Q&A
+                <span>💬</span> Instant Q&A
               </button>
             </li>
             <li>
@@ -295,12 +348,17 @@
                 <span>🗺️</span> Learning Roadmap
               </button>
             </li>
+            <li>
+              <button onclick="switchWorkspaceTab('history')" id="ws-nav-history" class="workspace-nav-btn">
+                <span>📚</span> Study Notebook
+              </button>
+            </li>
           </ul>
         </div>
         
         <div class="workspace-sidebar-footer">
-          <button onclick="toggleWorkspaceView(false)" class="workspace-nav-btn" style="color: #6366f1;">
-            <span>🏠</span> Back to Home
+          <button onclick="toggleWorkspaceView(false)" class="workspace-nav-btn" style="color: var(--brand-cyan);">
+            <span>🏠</span> Landing Page
           </button>
           <button onclick="logout()" class="workspace-nav-btn" style="color: var(--color-error);">
             <span>🚪</span> Sign Out
@@ -310,97 +368,379 @@
 
       <!-- Right Main Workspace Content area -->
       <main class="workspace-content">
+        
+        <!-- Live Analytics Stats Bar -->
+        <div class="stats-banner" id="statsBanner">
+          <div class="stat-card">
+            <div class="stat-icon">💬</div>
+            <div>
+              <div class="stat-number" id="stat-qa">0</div>
+              <div class="stat-label">Q&A Solved</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">💡</div>
+            <div>
+              <div class="stat-number" id="stat-explain">0</div>
+              <div class="stat-label">Concepts</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📝</div>
+            <div>
+              <div class="stat-number" id="stat-summary">0</div>
+              <div class="stat-label">Summaries</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">✏️</div>
+            <div>
+              <div class="stat-number" id="stat-quiz">0</div>
+              <div class="stat-label">Quizzes</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🗺️</div>
+            <div>
+              <div class="stat-number" id="stat-roadmap">0</div>
+              <div class="stat-label">Roadmaps</div>
+            </div>
+          </div>
+        </div>
+
         <!-- 01. Q&A Panel -->
         <div id="panel-qa" class="workspace-panel active">
-          <h2 class="workspace-tool-title">Instant Q&A</h2>
-          <p class="workspace-tool-desc">Enter any general academic question below. Powered by Google Gemini 1.5/2.5 Flash API in the cloud.</p>
-          <form id="qaForm" class="tool-form">
-            <div class="form-group-horizontal">
-              <label for="question"><strong>Ask EduGenie a Question:</strong></label>
-              <div class="input-row">
-                <input type="text" id="question" placeholder="Why is the sky blue?" required>
-                <button type="submit" class="btn">Get Answer</button>
+          <div class="workspace-header-bar">
+            <div>
+              <h2 class="workspace-tool-title">Instant Academic Q&A</h2>
+              <p class="workspace-tool-desc">Ask any academic question and receive verified, step-by-step answers in seconds.</p>
+            </div>
+            <span class="model-pill-tag">⚡ Powered by Gemini 2.5 Flash Cloud</span>
+          </div>
+
+          <div class="tool-card">
+            <form id="qaForm" class="tool-form">
+              <div class="form-group-horizontal">
+                <label for="question" class="form-label"><span>❓</span> Enter your question:</label>
+                <div class="input-row">
+                  <input type="text" id="question" placeholder="e.g. How does backpropagation work in neural networks?" required autocomplete="off">
+                  <button type="submit" class="btn">Ask EduGenie ⚡</button>
+                </div>
+              </div>
+            </form>
+
+            <div class="suggestion-pills">
+              <span class="suggestion-label">Quick test:</span>
+              <button class="pill-btn" onclick="applySuggestion('qa', 'Why is the sky blue during the day?')">Why is the sky blue?</button>
+              <button class="pill-btn" onclick="applySuggestion('qa', 'Explain Newton\'s 3 Laws of Motion with examples.')">Newton's 3 Laws</button>
+              <button class="pill-btn" onclick="applySuggestion('qa', 'What is the time complexity of QuickSort?')">QuickSort Complexity</button>
+            </div>
+          </div>
+
+          <!-- Result Container -->
+          <div id="qaResultContainer" class="output-container">
+            <div class="output-header">
+              <div class="output-title-badge">
+                <span>🤖</span> EduGenie Solution
+              </div>
+              <div class="ai-action-toolbar">
+                <button class="btn-tool-action" onclick="readAloud('qaOutputContent')">🔊 Listen</button>
+                <button class="btn-tool-action" onclick="copyContent('qaOutputContent')">📋 Copy</button>
+                <button class="btn-tool-action" onclick="downloadNote('QnA-Answer', 'qaOutputContent')">💾 Save Note</button>
               </div>
             </div>
-          </form>
-          <div id="qaResult" class="output"></div>
+            <div id="qaOutputContent" class="output-body"></div>
+          </div>
         </div>
 
         <!-- 02. Concept Explainer Panel -->
         <div id="panel-explain" class="workspace-panel">
-          <h2 class="workspace-tool-title">Concept Explainer</h2>
-          <p class="workspace-tool-desc">Provide a complex topic below. Instantly broken down step-by-step using your local CPU resources via HuggingFace's LaMini-Flan-T5 model.</p>
-          <form id="explainForm" class="tool-form">
-            <div class="form-group-horizontal">
-              <label for="topic"><strong>Need an Explanation?</strong></label>
-              <div class="input-row">
-                <input type="text" id="topic" placeholder="Photosynthesis" required>
-                <button type="submit" class="btn">Explain</button>
+          <div class="workspace-header-bar">
+            <div>
+              <h2 class="workspace-tool-title">Deep Concept Explainer</h2>
+              <p class="workspace-tool-desc">Break down complex, intimidating concepts into intuitive analogies and clear steps.</p>
+            </div>
+            <span class="model-pill-tag" style="border-color: rgba(168, 85, 247, 0.4); color: #d8b4fe;">💻 HuggingFace LaMini-Flan-T5</span>
+          </div>
+
+          <div class="tool-card">
+            <form id="explainForm" class="tool-form">
+              <div class="form-group-horizontal">
+                <label for="topic" class="form-label"><span>💡</span> Concept or Topic to Explain:</label>
+                <div class="input-row">
+                  <input type="text" id="topic" placeholder="e.g. Photosynthesis, Dijkstra's Algorithm, Recursion" required autocomplete="off">
+                  <button type="submit" class="btn">Explain Concept 🧠</button>
+                </div>
+              </div>
+            </form>
+
+            <div class="suggestion-pills">
+              <span class="suggestion-label">Quick test:</span>
+              <button class="pill-btn" onclick="applySuggestion('explain', 'Photosynthesis')">Photosynthesis</button>
+              <button class="pill-btn" onclick="applySuggestion('explain', 'Recursion in Computer Science')">Recursion</button>
+              <button class="pill-btn" onclick="applySuggestion('explain', 'Blockchain Proof of Work')">Blockchain PoW</button>
+            </div>
+          </div>
+
+          <div id="explainResultContainer" class="output-container">
+            <div class="output-header">
+              <div class="output-title-badge">
+                <span>📘</span> Concept Breakdown
+              </div>
+              <div class="ai-action-toolbar">
+                <button class="btn-tool-action" onclick="readAloud('explainOutputContent')">🔊 Listen</button>
+                <button class="btn-tool-action" onclick="copyContent('explainOutputContent')">📋 Copy</button>
+                <button class="btn-tool-action" onclick="downloadNote('Concept-Explanation', 'explainOutputContent')">💾 Save Note</button>
               </div>
             </div>
-          </form>
-          <div id="explanationResult" class="output"></div>
+            <div id="explainOutputContent" class="output-body"></div>
+          </div>
         </div>
 
         <!-- 03. Text Summarizer Panel -->
         <div id="panel-summarize" class="workspace-panel">
-          <h2 class="workspace-tool-title">Text Summarizer</h2>
-          <p class="workspace-tool-desc">Paste long paragraphs, notes, or articles. Get structured, readable summaries built dynamically using Gemini cloud language models.</p>
-          <form id="summaryForm" class="tool-form">
-            <div class="form-group-horizontal">
-              <label for="summaryText"><strong>Summarize a Paragraph:</strong></label>
-              <div class="input-row">
-                <input type="text" id="summaryText" placeholder="Paste long content to summarize" required>
-                <button type="submit" class="btn">Summarize</button>
+          <div class="workspace-header-bar">
+            <div>
+              <h2 class="workspace-tool-title">Intelligent Text Summarizer</h2>
+              <p class="workspace-tool-desc">Condense long textbook excerpts, notes, or articles into structured bullet takeaways.</p>
+            </div>
+            <span class="model-pill-tag">⚡ Powered by Gemini 2.5 Flash Cloud</span>
+          </div>
+
+          <div class="tool-card">
+            <form id="summaryForm" class="tool-form">
+              <div class="form-group-horizontal">
+                <label for="summaryText" class="form-label"><span>📝</span> Paste your text passage below:</label>
+                <div class="input-row">
+                  <textarea id="summaryText" placeholder="Paste article paragraphs, research notes, or textbook chapter here..." required></textarea>
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
+                  <button type="submit" class="btn">Summarize Passage 📑</button>
+                </div>
+              </div>
+            </form>
+
+            <div class="suggestion-pills">
+              <span class="suggestion-label">Quick test:</span>
+              <button class="pill-btn" onclick="applySuggestion('summarize', 'Quantum computing is a rapidly-emerging technology that harnesses the laws of quantum mechanics to solve problems too complex for classical computers. Today, IBM Quantum hardware is available to thousands of developers. Superposition and entanglement allow qubits to process vast states simultaneously.')">Quantum Computing Passage</button>
+              <button class="pill-btn" onclick="applySuggestion('summarize', 'Mitochondria are membrane-bound cell organelles that generate most of the chemical energy needed to power the cell biochemical reactions. Chemical energy produced by the mitochondria is stored in a small molecule called adenosine triphosphate (ATP).')">Mitochondria Biology</button>
+            </div>
+          </div>
+
+          <div id="summaryResultContainer" class="output-container">
+            <div class="output-header">
+              <div class="output-title-badge">
+                <span>📌</span> Executive Summary
+              </div>
+              <div class="ai-action-toolbar">
+                <button class="btn-tool-action" onclick="readAloud('summaryOutputContent')">🔊 Listen</button>
+                <button class="btn-tool-action" onclick="copyContent('summaryOutputContent')">📋 Copy</button>
+                <button class="btn-tool-action" onclick="downloadNote('Summary-Note', 'summaryOutputContent')">💾 Save Note</button>
               </div>
             </div>
-          </form>
-          <div id="summaryResult" class="output"></div>
+            <div id="summaryOutputContent" class="output-body"></div>
+          </div>
         </div>
 
         <!-- 04. Quiz Generator Panel -->
         <div id="panel-quiz" class="workspace-panel">
-          <h2 class="workspace-tool-title">Quiz Generator</h2>
-          <p class="workspace-tool-desc">Enter a subject or concept. Instantly generate interactive multiple-choice quizzes with explanations to check your understanding.</p>
-          <form id="quizForm" class="tool-form">
-            <div class="form-group-horizontal">
-              <label for="quizText"><strong>Generate a Quiz:</strong></label>
-              <div class="input-row">
-                <input type="text" id="quizText" placeholder="Solar System" required>
-                <button type="submit" class="btn">Generate Quiz</button>
-              </div>
+          <div class="workspace-header-bar">
+            <div>
+              <h2 class="workspace-tool-title">Interactive MCQ Quiz Generator</h2>
+              <p class="workspace-tool-desc">Test your understanding with automated multiple-choice tests, instant scoring, and explanations.</p>
             </div>
-          </form>
-          <div id="quizResult" class="output"></div>
+            <span class="model-pill-tag">⚡ Powered by Gemini 2.5 Flash Cloud</span>
+          </div>
+
+          <div class="tool-card">
+            <form id="quizForm" class="tool-form">
+              <div class="form-group-horizontal">
+                <label for="quizText" class="form-label"><span>✏️</span> Subject or Topic for Quiz:</label>
+                <div class="input-row">
+                  <input type="text" id="quizText" placeholder="e.g. Machine Learning, Solar System, Data Structures, Indian History" required autocomplete="off">
+                  <button type="submit" class="btn">Generate Quiz 🎯</button>
+                </div>
+              </div>
+            </form>
+
+            <div class="suggestion-pills">
+              <span class="suggestion-label">Quick test:</span>
+              <button class="pill-btn" onclick="applySuggestion('quiz', 'Machine Learning')">Machine Learning</button>
+              <button class="pill-btn" onclick="applySuggestion('quiz', 'Solar System Astronomy')">Solar System</button>
+              <button class="pill-btn" onclick="applySuggestion('quiz', 'Data Structures & Algorithms')">Data Structures</button>
+            </div>
+          </div>
+
+          <div id="quizResultContainer" class="output-container">
+            <div id="quizOutputContent" class="output-body"></div>
+          </div>
         </div>
 
         <!-- 05. Learning Roadmap Panel -->
         <div id="panel-recommend" class="workspace-panel">
-          <h2 class="workspace-tool-title">Learning Roadmap</h2>
-          <p class="workspace-tool-desc">Type in any skill or subject you want to master. Receive a personalized adaptive learning plan with structured resource references.</p>
-          <form id="recommendForm" class="tool-form">
-            <div class="form-group-horizontal">
-              <label for="recommendTopic"><strong>Get Learning Recommendations:</strong></label>
-              <div class="input-row">
-                <input type="text" id="recommendTopic" placeholder="e.g. Linear Regression" required>
-                <button type="submit" class="btn">Get Recommendations</button>
+          <div class="workspace-header-bar">
+            <div>
+              <h2 class="workspace-tool-title">Adaptive Learning Roadmap</h2>
+              <p class="workspace-tool-desc">Receive a personalized beginner-to-advanced curriculum with milestones and curated resources.</p>
+            </div>
+            <span class="model-pill-tag">⚡ Powered by Gemini 2.5 Flash Cloud</span>
+          </div>
+
+          <div class="tool-card">
+            <form id="recommendForm" class="tool-form">
+              <div class="form-group-horizontal">
+                <label for="recommendTopic" class="form-label"><span>🗺️</span> Skill or Domain to Master:</label>
+                <div class="input-row">
+                  <input type="text" id="recommendTopic" placeholder="e.g. Full Stack Web Development, Deep Learning, Cloud Computing" required autocomplete="off">
+                  <button type="submit" class="btn">Generate Roadmap 🚀</button>
+                </div>
+              </div>
+            </form>
+
+            <div class="suggestion-pills">
+              <span class="suggestion-label">Quick test:</span>
+              <button class="pill-btn" onclick="applySuggestion('recommend', 'Full-Stack Web Development')">Full-Stack Dev</button>
+              <button class="pill-btn" onclick="applySuggestion('recommend', 'Deep Learning & PyTorch')">Deep Learning</button>
+              <button class="pill-btn" onclick="applySuggestion('recommend', 'Cloud Computing with AWS')">Cloud / AWS</button>
+            </div>
+          </div>
+
+          <div id="recommendResultContainer" class="output-container">
+            <div class="output-header">
+              <div class="output-title-badge">
+                <span>🗺️</span> Structured Roadmap
+              </div>
+              <div class="ai-action-toolbar">
+                <button class="btn-tool-action" onclick="readAloud('recommendOutputContent')">🔊 Listen</button>
+                <button class="btn-tool-action" onclick="copyContent('recommendOutputContent')">📋 Copy</button>
+                <button class="btn-tool-action" onclick="downloadNote('Learning-Roadmap', 'recommendOutputContent')">💾 Save Note</button>
               </div>
             </div>
-          </form>
-          <div id="recommendResult" class="output"></div>
+            <div id="recommendOutputContent" class="output-body"></div>
+          </div>
         </div>
+
+        <!-- 06. Study Notebook & History Panel -->
+        <div id="panel-history" class="workspace-panel">
+          <div class="workspace-header-bar">
+            <div>
+              <h2 class="workspace-tool-title">My Study Notebook & Query Log</h2>
+              <p class="workspace-tool-desc">Access your previous questions, generated roadmaps, summaries, and quizzes saved in the database.</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button onclick="fetchHistory()" class="btn btn-sm btn-outline">🔄 Refresh</button>
+              <button onclick="clearAllHistory()" class="btn btn-sm btn-outline" style="color: var(--color-error); border-color: rgba(244, 63, 94, 0.4);">🗑️ Clear All</button>
+            </div>
+          </div>
+
+          <div class="history-controls">
+            <input type="text" id="historySearch" oninput="filterHistory()" placeholder="🔍 Filter saved queries..." class="history-search-input">
+            <span id="historyCountBadge" style="font-size: 0.88rem; color: var(--text-sub);">Loading history...</span>
+          </div>
+
+          <div id="historyListContainer" class="history-grid"></div>
+        </div>
+
       </main>
     </div>
   </div>
 
   <!-- ============================================================ -->
-  <!-- JAVASCRIPT: Auth Flows, Fetch API, and Quiz Evaluators -->
+  <!-- JAVASCRIPT: Logic, Speech Synthesis, History, and Canvas -->
   <!-- ============================================================ -->
   <script>
     let isUserLoggedIn = false;
     let isWorkspaceActive = false;
+    let cachedHistory = [];
+    let currentSpeechSynthesisUtterance = null;
 
-    // Check session on startup
+    // Toast Notifications
+    function showToast(message, icon = '✨') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3200);
+    }
+
+    // Text to Speech (TTS)
+    function readAloud(elementId) {
+      if (!('speechSynthesis' in window)) {
+        showToast('Speech synthesis not supported in this browser.', '⚠️');
+        return;
+      }
+      
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        showToast('Playback stopped.', '⏹️');
+        return;
+      }
+
+      const element = document.getElementById(elementId);
+      if (!element || !element.innerText.trim()) {
+        showToast('No text available to read.', '⚠️');
+        return;
+      }
+
+      const text = element.innerText;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      window.speechSynthesis.speak(utterance);
+      showToast('Reading note aloud... Click again to stop.', '🔊');
+    }
+
+    // Copy Content to Clipboard
+    function copyContent(elementId) {
+      const element = document.getElementById(elementId);
+      if (!element) return;
+      const text = element.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Copied note to clipboard!', '📋');
+      }).catch(() => {
+        showToast('Failed to copy text.', '⚠️');
+      });
+    }
+
+    // Download Note as Markdown
+    function downloadNote(filename, elementId) {
+      const element = document.getElementById(elementId);
+      if (!element) return;
+      const text = element.innerText;
+      const blob = new Blob([text], { type: 'text/markdown;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `${filename}-${Date.now()}.md`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Note downloaded successfully!', '💾');
+    }
+
+    // Quick Suggestion Filler
+    function applySuggestion(tool, value) {
+      if (tool === 'qa') {
+        document.getElementById('question').value = value;
+      } else if (tool === 'explain') {
+        document.getElementById('topic').value = value;
+      } else if (tool === 'summarize') {
+        document.getElementById('summaryText').value = value;
+      } else if (tool === 'quiz') {
+        document.getElementById('quizText').value = value;
+      } else if (tool === 'recommend') {
+        document.getElementById('recommendTopic').value = value;
+      }
+      showToast(`Prompt loaded: "${value.substring(0, 30)}..."`, '💡');
+    }
+
+    // Check user session
     async function checkCurrentUser() {
       try {
         const response = await fetch('/current-user');
@@ -424,18 +764,32 @@
           headerLoggedIn.style.display = 'flex';
           closeAuthModal();
           
-          // Show workspace by default when logged in
           toggleWorkspaceView(true);
+          fetchStats();
         } else {
           isUserLoggedIn = false;
           headerLoggedOut.style.display = 'flex';
           headerLoggedIn.style.display = 'none';
-          
-          // Revert to landing page when logged out
           toggleWorkspaceView(false);
         }
       } catch (err) {
-        console.error("Auth status validation check failed:", err);
+        console.error("Auth validation check failed:", err);
+      }
+    }
+
+    // Refresh Analytics Stats
+    async function fetchStats() {
+      try {
+        const res = await fetch('/stats');
+        if (!res.ok) return;
+        const data = await res.json();
+        document.getElementById('stat-qa').textContent = data.qa_count || 0;
+        document.getElementById('stat-explain').textContent = data.explain_count || 0;
+        document.getElementById('stat-summary').textContent = data.summary_count || 0;
+        document.getElementById('stat-quiz').textContent = data.quiz_count || 0;
+        document.getElementById('stat-roadmap').textContent = data.roadmap_count || 0;
+      } catch (e) {
+        console.error("Failed to load stats:", e);
       }
     }
 
@@ -446,26 +800,22 @@
       if (customText) {
         subtitle.textContent = customText;
       } else {
-        subtitle.textContent = "Sign In to access all features!";
+        subtitle.textContent = "Sign In to access all AI study tools!";
       }
       modal.classList.add('active');
       switchAuthTab(tab);
     }
     
     function closeAuthModal() {
-      const modal = document.getElementById('authModal');
-      modal.classList.remove('active');
+      document.getElementById('authModal').classList.remove('active');
     }
     
-    // Close modal on background click
     window.addEventListener('click', (e) => {
       const modal = document.getElementById('authModal');
-      if (e.target === modal) {
-        closeAuthModal();
-      }
+      if (e.target === modal) closeAuthModal();
     });
 
-    // SaaS Workspace Toggles
+    // Workspace Toggles
     function toggleWorkspaceView(showWorkspace) {
       const landingPage = document.getElementById('landingPage');
       const workspaceDashboard = document.getElementById('workspaceDashboard');
@@ -474,40 +824,33 @@
         landingPage.style.display = 'none';
         workspaceDashboard.style.display = 'block';
         isWorkspaceActive = true;
-        
-        // Remove active class from landing nav links
         document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+        fetchStats();
       } else {
         landingPage.style.display = 'block';
         workspaceDashboard.style.display = 'none';
         isWorkspaceActive = false;
-        
-        // Resize canvas after layout change
         setTimeout(resizeCanvas, 50);
       }
     }
 
     function switchWorkspaceTab(tabId) {
-      // Hide all panels
-      document.querySelectorAll('.workspace-panel').forEach(panel => {
-        panel.classList.remove('active');
-      });
+      document.querySelectorAll('.workspace-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.workspace-nav-btn').forEach(b => b.classList.remove('active'));
       
-      // Remove active states from sidebar buttons
-      document.querySelectorAll('.workspace-nav-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      
-      // Show target panel and highlight button
       const targetPanel = document.getElementById(`panel-${tabId}`);
       const targetBtn = document.getElementById(`ws-nav-${tabId}`);
       if (targetPanel && targetBtn) {
         targetPanel.classList.add('active');
         targetBtn.classList.add('active');
       }
+
+      if (tabId === 'history') {
+        fetchHistory();
+      }
     }
 
-    // Gated Actions
+    // Hero CTA handlers
     function handleHeroCTA() {
       if (isUserLoggedIn) {
         toggleWorkspaceView(true);
@@ -521,7 +864,7 @@
         toggleWorkspaceView(true);
         switchWorkspaceTab(featureKey);
       } else {
-        openAuthModal('register', `Create a new account to unlock the ${featureKey.toUpperCase()} tool!`);
+        openAuthModal('register', `Create a free account to unlock the ${featureKey.toUpperCase()} tool!`);
       }
     }
 
@@ -533,9 +876,7 @@
     }
 
     function handleNavClick(section) {
-      // Close workspace view first
       toggleWorkspaceView(false);
-      
       let targetId = '';
       switch(section) {
         case 'home': targetId = 'homeSection'; break;
@@ -543,178 +884,409 @@
         case 'about': targetId = 'aboutSection'; break;
         case 'team': targetId = 'teamSection'; break;
       }
-      
       const targetEl = document.getElementById(targetId);
-      if (targetEl) {
-        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // Highlights Active Section in Nav Header
-    const observerOptions = {
-      root: null,
-      rootMargin: '-20% 0px -60% 0px',
-      threshold: 0
-    };
+    // Markdown Parser
+    function escapeHTML(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
 
-    const observer = new IntersectionObserver((entries) => {
-      if (isWorkspaceActive) return;
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const sectionId = entry.target.id;
-          let navKey = '';
-          switch(sectionId) {
-            case 'homeSection': navKey = 'home'; break;
-            case 'featuresSection': navKey = 'features'; break;
-            case 'aboutSection': navKey = 'about'; break;
-            case 'teamSection': navKey = 'team'; break;
-          }
-          if (navKey) {
-            document.querySelectorAll('.nav-link').forEach(link => {
-              link.classList.remove('active');
-              if (link.getAttribute('onclick').includes(`'${navKey}'`)) {
-                link.classList.add('active');
-              }
-            });
-          }
+    function renderMarkdownLite(rawText) {
+      const escaped = escapeHTML(rawText);
+      const lines = escaped.split('\n');
+      const htmlLines = lines.map((line) => {
+        let processed = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        processed = processed.replace(/\*(.+?)\*/g, '<em>$1</em>');
+        if (/^####\s+/.test(processed)) return `<h5>${processed.replace(/^####\s+/, '')}</h5>`;
+        if (/^###\s+/.test(processed)) return `<h4>${processed.replace(/^###\s+/, '')}</h4>`;
+        if (/^##\s+/.test(processed)) return `<h3>${processed.replace(/^##\s+/, '')}</h3>`;
+        if (/^[\*\-]\s+/.test(processed)) return `<li>${processed.replace(/^[\*\-]\s+/, '')}</li>`;
+        return processed || '<br>';
+      });
+      return htmlLines.join('<br>');
+    }
+
+    function setThinking(container, outputEl) {
+      container.classList.add('active');
+      outputEl.innerHTML = `
+        <div class="thinking-box">
+          <div class="thinking-pulse"></div>
+          <span>EduGenie AI is analyzing and synthesizing answer...</span>
+        </div>
+      `;
+    }
+
+    // ============================================================
+    // Q&A HANDLER
+    // ============================================================
+    const qaForm = document.getElementById('qaForm');
+    const qaResultContainer = document.getElementById('qaResultContainer');
+    const qaOutputContent = document.getElementById('qaOutputContent');
+
+    qaForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const question = document.getElementById('question').value.trim();
+      if (!question) return;
+
+      setThinking(qaResultContainer, qaOutputContent);
+      try {
+        const response = await fetch(`/qa?question=${encodeURIComponent(question)}`);
+        const data = await response.json();
+        
+        if (!response.ok) {
+          qaOutputContent.innerHTML = `<div style="color: var(--color-error)"><strong>Error:</strong> ${data.error || 'Failed to get answer.'}</div>`;
+          return;
         }
-      });
-    }, observerOptions);
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const sections = ['homeSection', 'featuresSection', 'aboutSection', 'teamSection'];
-      sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) observer.observe(el);
-      });
+        qaOutputContent.innerHTML = renderMarkdownLite(data.answer);
+        showToast('Q&A answer ready!', '⚡');
+        fetchStats();
+      } catch (err) {
+        qaOutputContent.innerHTML = `<div style="color: var(--color-error)"><strong>Error:</strong> Network connection failed.</div>`;
+      }
     });
 
-    // Canvas Particles System
-    let canvas, ctx;
-    let particles = [];
-    const particleCount = 75;
-    const connectionDistance = 125;
-    let mouse = { x: null, y: null, radius: 150 };
+    // ============================================================
+    // CONCEPT EXPLAINER HANDLER
+    // ============================================================
+    const explainForm = document.getElementById('explainForm');
+    const explainResultContainer = document.getElementById('explainResultContainer');
+    const explainOutputContent = document.getElementById('explainOutputContent');
 
-    function initCanvasParticles() {
-      canvas = document.getElementById('particlesCanvas');
-      if (!canvas) return;
-      ctx = canvas.getContext('2d');
-      
-      resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
-      
-      // Initialize particles
-      particles = [];
-      for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle());
-      }
-      
-      // Mouse listeners
-      window.addEventListener('mousemove', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        mouse.x = e.clientX - rect.left;
-        mouse.y = e.clientY - rect.top;
-      });
-      
-      window.addEventListener('mouseout', () => {
-        mouse.x = null;
-        mouse.y = null;
-      });
-      
-      requestAnimationFrame(animateCanvas);
-    }
+    explainForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const topic = document.getElementById('topic').value.trim();
+      if (!topic) return;
 
-    function resizeCanvas() {
-      if (!canvas) return;
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
+      setThinking(explainResultContainer, explainOutputContent);
+      try {
+        const response = await fetch('/explain/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ topic })
+        });
+        const data = await response.json();
 
-    class Particle {
-      constructor() {
-        this.x = Math.random() * window.innerWidth;
-        this.y = Math.random() * window.innerHeight;
-        this.vx = (Math.random() - 0.5) * 1.1;
-        this.vy = (Math.random() - 0.5) * 1.1;
-        this.radius = Math.random() * 2 + 1.5;
-      }
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        
-        if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
-        if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
-      }
-      draw(color) {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = color;
-        ctx.fill();
-      }
-    }
+        if (!response.ok) {
+          explainOutputContent.innerHTML = `<div style="color: var(--color-error)"><strong>Error:</strong> ${data.error || 'Failed to explain concept.'}</div>`;
+          return;
+        }
 
-    function animateCanvas() {
-      if (!canvas || document.getElementById('landingPage').style.display === 'none') {
-        requestAnimationFrame(animateCanvas);
+        explainOutputContent.innerHTML = renderMarkdownLite(data.explanation);
+        showToast('Explanation breakdown ready!', '💡');
+        fetchStats();
+      } catch (err) {
+        explainOutputContent.innerHTML = `<div style="color: var(--color-error)"><strong>Error:</strong> Network connection failed.</div>`;
+      }
+    });
+
+    // ============================================================
+    // TEXT SUMMARIZER HANDLER
+    // ============================================================
+    const summaryForm = document.getElementById('summaryForm');
+    const summaryResultContainer = document.getElementById('summaryResultContainer');
+    const summaryOutputContent = document.getElementById('summaryOutputContent');
+
+    summaryForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = document.getElementById('summaryText').value.trim();
+      if (!text) return;
+
+      setThinking(summaryResultContainer, summaryOutputContent);
+      try {
+        const response = await fetch('/summarize/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          summaryOutputContent.innerHTML = `<div style="color: var(--color-error)"><strong>Error:</strong> ${data.error || 'Failed to summarize text.'}</div>`;
+          return;
+        }
+
+        summaryOutputContent.innerHTML = renderMarkdownLite(data.summary);
+        showToast('Summary compiled!', '📝');
+        fetchStats();
+      } catch (err) {
+        summaryOutputContent.innerHTML = `<div style="color: var(--color-error)"><strong>Error:</strong> Network connection failed.</div>`;
+      }
+    });
+
+    // ============================================================
+    // QUIZ GENERATOR & EVALUATOR HANDLER
+    // ============================================================
+    const quizForm = document.getElementById('quizForm');
+    const quizResultContainer = document.getElementById('quizResultContainer');
+    const quizOutputContent = document.getElementById('quizOutputContent');
+
+    let currentQuizScore = 0;
+    let totalQuizQuestions = 0;
+
+    quizForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = document.getElementById('quizText').value.trim();
+      if (!text) return;
+
+      setThinking(quizResultContainer, quizOutputContent);
+      try {
+        const response = await fetch('/quiz', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+          quizOutputContent.innerHTML = `<div style="color: var(--color-error)"><strong>Error:</strong> ${data.error || 'Failed to generate quiz.'}</div>`;
+          return;
+        }
+
+        renderQuiz(quizOutputContent, data.quiz, text);
+        showToast('Quiz generated! Test your knowledge.', '🎯');
+        fetchStats();
+      } catch (err) {
+        quizOutputContent.innerHTML = `<div style="color: var(--color-error)"><strong>Error:</strong> Network connection failed.</div>`;
+      }
+    });
+
+    function renderQuiz(container, quiz, topic) {
+      container.innerHTML = '';
+      if (!Array.isArray(quiz) || quiz.length === 0) {
+        container.innerHTML = `<div style="color: var(--color-error)">Could not parse quiz questions. Please try another keyword.</div>`;
         return;
       }
-      
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      const isLight = document.body.classList.contains('light-theme');
-      const particleColor = isLight ? 'rgba(79, 70, 229, 0.6)' : 'rgba(0, 240, 255, 0.7)';
-      const lineColorTemplate = isLight ? '79, 70, 229' : '0, 240, 255';
-      
-      particles.forEach(p => {
-        p.update();
-        p.draw(particleColor);
-      });
-      
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < connectionDistance) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(${lineColorTemplate}, ${0.5 * (1 - dist / connectionDistance)})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
+
+      currentQuizScore = 0;
+      totalQuizQuestions = quiz.length;
+
+      const header = document.createElement('div');
+      header.className = 'quiz-header-status';
+      header.innerHTML = `
+        <div>
+          <strong>Quiz on: "${escapeHTML(topic)}"</strong>
+          <div style="font-size: 0.85rem; color: var(--text-sub);">Select an answer and click verify for each question.</div>
+        </div>
+        <div class="quiz-score-badge" id="quizScoreDisplay">Score: 0 / ${totalQuizQuestions}</div>
+      `;
+      container.appendChild(header);
+
+      quiz.forEach((item, qIndex) => {
+        const qBlock = document.createElement('div');
+        qBlock.className = 'quiz-card';
+
+        const qTitle = document.createElement('div');
+        qTitle.className = 'quiz-question-title';
+        qTitle.innerHTML = `<span>Q${qIndex + 1}.</span> <span>${escapeHTML(item.question)}</span>`;
+        qBlock.appendChild(qTitle);
+
+        const optsDiv = document.createElement('div');
+        optsDiv.className = 'quiz-options-group';
+
+        item.options.forEach((opt, oIndex) => {
+          const label = document.createElement('label');
+          label.className = 'quiz-option-label';
+
+          const radio = document.createElement('input');
+          radio.type = 'radio';
+          radio.name = `quiz_q_${qIndex}`;
+          radio.value = opt;
+
+          label.appendChild(radio);
+          label.appendChild(document.createTextNode(opt));
+          optsDiv.appendChild(label);
+        });
+        qBlock.appendChild(optsDiv);
+
+        const checkBtn = document.createElement('button');
+        checkBtn.type = 'button';
+        checkBtn.className = 'btn-check-quiz';
+        checkBtn.textContent = 'Verify Answer ✓';
         
-        if (mouse.x !== null && mouse.y !== null) {
-          const dx = particles[i].x - mouse.x;
-          const dy = particles[i].y - mouse.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < mouse.radius) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(mouse.x, mouse.y);
-            ctx.strokeStyle = `rgba(${lineColorTemplate}, ${0.6 * (1 - dist / mouse.radius)})`;
-            ctx.lineWidth = 0.8;
-            ctx.stroke();
+        const feedback = document.createElement('div');
+        feedback.className = 'quiz-feedback-box';
+
+        let answered = false;
+
+        checkBtn.addEventListener('click', () => {
+          const selected = optsDiv.querySelector(`input[name="quiz_q_${qIndex}"]:checked`);
+          if (!selected) {
+            feedback.className = 'quiz-feedback-box incorrect';
+            feedback.textContent = 'Please choose an option first.';
+            return;
           }
-        }
-      }
-      
-      requestAnimationFrame(animateCanvas);
+
+          const chosen = selected.value;
+          const correct = item.answer;
+
+          if (chosen === correct) {
+            feedback.className = 'quiz-feedback-box correct';
+            feedback.innerHTML = `✅ <strong>Correct!</strong> Great job!`;
+            if (!answered) {
+              currentQuizScore++;
+              answered = true;
+            }
+          } else {
+            feedback.className = 'quiz-feedback-box incorrect';
+            feedback.innerHTML = `❌ <strong>Incorrect.</strong> Correct answer: <em>${escapeHTML(correct)}</em>`;
+          }
+
+          document.getElementById('quizScoreDisplay').textContent = `Score: ${currentQuizScore} / ${totalQuizQuestions}`;
+        });
+
+        qBlock.appendChild(checkBtn);
+        qBlock.appendChild(feedback);
+        container.appendChild(qBlock);
+      });
     }
 
-    // Global Verification state
+    // ============================================================
+    // LEARNING ROADMAP HANDLER
+    // ============================================================
+    const recommendForm = document.getElementById('recommendForm');
+    const recommendResultContainer = document.getElementById('recommendResultContainer');
+    const recommendOutputContent = document.getElementById('recommendOutputContent');
+
+    recommendForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const topic = document.getElementById('recommendTopic').value.trim();
+      if (!topic) return;
+
+      setThinking(recommendResultContainer, recommendOutputContent);
+      try {
+        const response = await fetch(`/learn/recommendations?topic=${encodeURIComponent(topic)}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+          recommendOutputContent.innerHTML = `<div style="color: var(--color-error)"><strong>Error:</strong> ${data.error || 'Failed to fetch recommendations.'}</div>`;
+          return;
+        }
+
+        recommendOutputContent.innerHTML = renderMarkdownLite(data.recommendation);
+        showToast('Adaptive roadmap generated!', '🗺️');
+        fetchStats();
+      } catch (err) {
+        recommendOutputContent.innerHTML = `<div style="color: var(--color-error)"><strong>Error:</strong> Network connection failed.</div>`;
+      }
+    });
+
+    // ============================================================
+    // STUDY NOTEBOOK & HISTORY HANDLERS
+    // ============================================================
+    async function fetchHistory() {
+      const container = document.getElementById('historyListContainer');
+      const badge = document.getElementById('historyCountBadge');
+      container.innerHTML = `<div style="padding: 20px; color: var(--text-sub); text-align: center;">Loading saved sessions...</div>`;
+      
+      try {
+        const res = await fetch('/history?limit=30');
+        if (!res.ok) throw new Error("History fetch error");
+        const data = await res.json();
+        cachedHistory = data.history || [];
+        renderHistoryList(cachedHistory);
+      } catch (err) {
+        container.innerHTML = `<div style="color: var(--color-error); padding: 20px;">Could not load history.</div>`;
+      }
+    }
+
+    function renderHistoryList(items) {
+      const container = document.getElementById('historyListContainer');
+      const badge = document.getElementById('historyCountBadge');
+      container.innerHTML = '';
+      badge.textContent = `Showing ${items.length} saved records`;
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="history-empty-state">
+            <div class="history-empty-icon">📖</div>
+            <h3>No study history yet</h3>
+            <p>Try asking a question, generating a roadmap, or creating a quiz to see your notes indexed here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      items.forEach((item) => {
+        const card = document.createElement('div');
+        card.className = 'history-item-card';
+
+        let typeClass = 'type-qna';
+        if (item.query_type === 'Explanation') typeClass = 'type-explanation';
+        if (item.query_type === 'Summary') typeClass = 'type-summary';
+        if (item.query_type === 'Quiz') typeClass = 'type-quiz';
+        if (item.query_type === 'Recommendation') typeClass = 'type-roadmap';
+
+        card.innerHTML = `
+          <div class="history-item-header">
+            <span class="history-type-badge ${typeClass}">${item.query_type}</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="history-date">${item.created_at}</span>
+              <button onclick="deleteHistoryItem(${item.query_id})" class="btn btn-sm btn-outline" style="padding: 3px 8px; font-size: 0.78rem; color: var(--color-error);" title="Delete note">🗑️</button>
+            </div>
+          </div>
+          <div class="history-question-text">"${escapeHTML(item.query_text)}"</div>
+          <div class="history-answer-preview">${renderMarkdownLite(item.response_text || '(No response text)')}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterHistory() {
+      const query = document.getElementById('historySearch').value.toLowerCase();
+      const filtered = cachedHistory.filter(item => 
+        (item.query_text && item.query_text.toLowerCase().includes(query)) ||
+        (item.response_text && item.response_text.toLowerCase().includes(query)) ||
+        (item.query_type && item.query_type.toLowerCase().includes(query))
+      );
+      renderHistoryList(filtered);
+    }
+
+    async function deleteHistoryItem(queryId) {
+      try {
+        const res = await fetch(`/history/${queryId}`, { method: 'DELETE' });
+        if (res.ok) {
+          showToast('Note deleted.', '🗑️');
+          fetchHistory();
+          fetchStats();
+        }
+      } catch (e) {
+        showToast('Failed to delete item.', '⚠️');
+      }
+    }
+
+    async function clearAllHistory() {
+      if (!confirm('Are you sure you want to clear all your study history?')) return;
+      try {
+        const res = await fetch('/clear-history', { method: 'POST' });
+        if (res.ok) {
+          showToast('All study history cleared.', '🧹');
+          fetchHistory();
+          fetchStats();
+        }
+      } catch (e) {
+        showToast('Failed to clear history.', '⚠️');
+      }
+    }
+
+    // ============================================================
+    // AUTHENTICATION FLOWS
+    // ============================================================
     let pendingVerificationEmail = "";
 
-    // Toggle Sign In / Create Account Tabs
     function switchAuthTab(tab) {
       const loginPanel = document.getElementById('loginPanel');
       const registerPanel = document.getElementById('registerPanel');
       const tabLoginBtn = document.getElementById('tabLoginBtn');
       const tabRegisterBtn = document.getElementById('tabRegisterBtn');
       
-      // Clear inputs and messages
       document.getElementById('loginEmail').value = '';
       document.getElementById('loginPassword').value = '';
       document.getElementById('regName').value = '';
@@ -725,8 +1297,6 @@
       
       document.getElementById('loginError').textContent = '';
       document.getElementById('registerStatus').textContent = '';
-      
-      // Reset signup OTP toggles
       document.getElementById('registerOtpContainer').style.display = 'none';
       document.getElementById('registerFieldsContainer').style.display = 'block';
       pendingVerificationEmail = "";
@@ -744,7 +1314,6 @@
       }
     }
 
-    // Registered user login
     async function login() {
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
@@ -769,16 +1338,13 @@
           return;
         }
 
-        // Login completed successfully
-        document.getElementById('loginEmail').value = '';
-        document.getElementById('loginPassword').value = '';
+        showToast('Signed in successfully!', '👋');
         checkCurrentUser();
       } catch (err) {
         errorDiv.textContent = 'Server connection error.';
       }
     }
 
-    // Initial Registration submission
     async function handleRegistrationSubmit() {
       const name = document.getElementById('regName').value.trim();
       const email = document.getElementById('regEmail').value.trim();
@@ -787,7 +1353,7 @@
       const statusDiv = document.getElementById('registerStatus');
       
       statusDiv.textContent = '';
-      statusDiv.style.color = '#dc2626';
+      statusDiv.style.color = '#f43f5e';
 
       if (!name || !email || !password || !confirmPassword) {
         statusDiv.textContent = 'Please fill in all fields.';
@@ -814,10 +1380,8 @@
 
         if (data.verification_required) {
           pendingVerificationEmail = email;
-          // Toggle input screens
           document.getElementById('registerFieldsContainer').style.display = 'none';
           document.getElementById('registerOtpContainer').style.display = 'block';
-          
           statusDiv.style.color = '#6366f1';
           statusDiv.innerHTML = data.message;
         }
@@ -826,12 +1390,11 @@
       }
     }
 
-    // OTP Verification submission
     async function verifyRegistrationOTP() {
       const otp = document.getElementById('regOtp').value.trim();
       const statusDiv = document.getElementById('registerStatus');
       statusDiv.textContent = '';
-      statusDiv.style.color = '#dc2626';
+      statusDiv.style.color = '#f43f5e';
 
       if (!otp) {
         statusDiv.textContent = 'Please enter the verification OTP.';
@@ -851,33 +1414,17 @@
           return;
         }
 
-        statusDiv.style.color = '#059669';
-        statusDiv.textContent = 'Account verified and created successfully!';
-        
-        // Clean up registration fields
-        document.getElementById('regName').value = '';
-        document.getElementById('regEmail').value = '';
-        document.getElementById('regPassword').value = '';
-        document.getElementById('regConfirmPassword').value = '';
-        document.getElementById('regOtp').value = '';
-        
-        // Restore standard panels
-        document.getElementById('registerOtpContainer').style.display = 'none';
-        document.getElementById('registerFieldsContainer').style.display = 'block';
-        
-        // Auto sign-in verified user
-        setTimeout(() => checkCurrentUser(), 1000);
+        statusDiv.style.color = '#10b981';
+        statusDiv.textContent = 'Account verified and ready!';
+        showToast('Account created & verified!', '🎉');
+        setTimeout(() => checkCurrentUser(), 800);
       } catch (err) {
         statusDiv.textContent = 'Server connection error.';
       }
     }
 
-    // Resend OTP trigger
     async function resendRegistrationOTP() {
       const statusDiv = document.getElementById('registerStatus');
-      statusDiv.textContent = '';
-      statusDiv.style.color = '#dc2626';
-
       try {
         const response = await fetch('/resend-registration-otp', {
           method: 'POST',
@@ -885,24 +1432,23 @@
           body: JSON.stringify({ email: pendingVerificationEmail })
         });
         const data = await response.json();
-
         if (!response.ok) {
-          statusDiv.textContent = data.error || 'Resending OTP failed.';
+          statusDiv.style.color = '#f43f5e';
+          statusDiv.textContent = data.error || 'Resend failed.';
           return;
         }
-
-        statusDiv.style.color = '#059669';
+        statusDiv.style.color = '#10b981';
         statusDiv.textContent = data.message;
       } catch (err) {
         statusDiv.textContent = 'Server connection error.';
       }
     }
 
-    // Guest mode sign in
     async function loginAsGuest() {
       try {
         const response = await fetch('/login-guest', { method: 'POST' });
         if (response.ok) {
+          showToast('Welcome to Guest Mode!', '⚡');
           checkCurrentUser();
         }
       } catch (err) {
@@ -910,301 +1456,127 @@
       }
     }
 
-    // Session log out
     async function logout() {
       await fetch('/logout', { method: 'POST' });
+      showToast('Logged out.', '👋');
       checkCurrentUser();
     }
 
-    // Loader helper
-    function setThinking(element) {
-      element.innerHTML = 'Thinking...';
-    }
+    // ============================================================
+    // CANVAS PARTICLES EFFECT
+    // ============================================================
+    let canvas, ctx;
+    let particles = [];
+    const particleCount = 65;
+    const connectionDistance = 120;
+    let mouse = { x: null, y: null, radius: 140 };
 
-    // Escape tags to secure outputs
-    function escapeHTML(str) {
-      return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
-
-    // Markdown rendering parser
-    function renderMarkdownLite(rawText) {
-      const escaped = escapeHTML(rawText);
-      const htmlLines = escaped.split('\n').map((line) => {
-        let processed = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-        if (/^###\s+/.test(processed)) {
-          return `<h5>${processed.replace(/^###\s+/, '')}</h5>`;
-        }
-        if (/^##\s+/.test(processed)) {
-          return `<h4>${processed.replace(/^##\s+/, '')}</h4>`;
-        }
-        if (/^\*\s+/.test(processed)) {
-          return `<li>${processed.replace(/^\*\s+/, '')}</li>`;
-        }
-        return processed || '<br>';
-      });
-      return htmlLines.join('<br>');
-    }
-
-    // Q&A Integration
-    const qaForm = document.getElementById('qaForm');
-    const qaResult = document.getElementById('qaResult');
-
-    qaForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const question = document.getElementById('question').value.trim();
-      if (!question) return;
-
-      setThinking(qaResult);
-      try {
-        const response = await fetch(`/qa?question=${encodeURIComponent(question)}`);
-        const data = await response.json();
-        
-        if (!response.ok) {
-          qaResult.innerHTML = `<strong>Error:</strong> ${data.error || 'Failed to answer question.'}`;
-          return;
-        }
-
-        qaResult.innerHTML = `<strong>Answer:</strong><br><br>${escapeHTML(data.answer)}`;
-      } catch (err) {
-        qaResult.innerHTML = `<strong>Error:</strong> Network connection error.`;
-      }
-    });
-
-    // Explanation Integration
-    const explainForm = document.getElementById('explainForm');
-    const explanationResult = document.getElementById('explanationResult');
-
-    explainForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const topic = document.getElementById('topic').value.trim();
-      if (!topic) return;
-
-      setThinking(explanationResult);
-      try {
-        const response = await fetch('/explain/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ topic })
-        });
-        const data = await response.json();
-
-        if (!response.ok) {
-          explanationResult.innerHTML = `<strong>Error:</strong> ${data.error || 'Failed to generate explanation.'}`;
-          return;
-        }
-
-        explanationResult.innerHTML = `<strong>Explanation:</strong><br><br>${escapeHTML(data.explanation)}`;
-      } catch (err) {
-        explanationResult.innerHTML = `<strong>Error:</strong> Network connection error.`;
-      }
-    });
-
-    // Summarization Integration
-    const summaryForm = document.getElementById('summaryForm');
-    const summaryResult = document.getElementById('summaryResult');
-
-    summaryForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const text = document.getElementById('summaryText').value.trim();
-      if (!text) return;
-
-      setThinking(summaryResult);
-      try {
-        const response = await fetch('/summarize/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text })
-        });
-        const data = await response.json();
-
-        if (!response.ok) {
-          summaryResult.innerHTML = `<strong>Error:</strong> ${data.error || 'Failed to summarize.'}`;
-          return;
-        }
-
-        summaryResult.innerHTML = `<strong>Summary:</strong><br><br>${escapeHTML(data.summary)}`;
-      } catch (err) {
-        summaryResult.innerHTML = `<strong>Error:</strong> Network connection error.`;
-      }
-    });
-
-    // Quiz Integration
-    const quizForm = document.getElementById('quizForm');
-    const quizResult = document.getElementById('quizResult');
-
-    quizForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const text = document.getElementById('quizText').value.trim();
-      if (!text) return;
-
-      setThinking(quizResult);
-      try {
-        const response = await fetch('/quiz', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text })
-        });
-        const data = await response.json();
-
-        if (!response.ok) {
-          quizResult.innerHTML = `<strong>Error:</strong> ${data.error || 'Failed to generate quiz.'}`;
-          return;
-        }
-
-        renderQuiz(quizResult, data.quiz);
-      } catch (err) {
-        quizResult.innerHTML = `<strong>Error:</strong> Network connection error.`;
-      }
-    });
-
-    function renderQuiz(container, quiz) {
-      container.innerHTML = '';
+    function initCanvasParticles() {
+      canvas = document.getElementById('particlesCanvas');
+      if (!canvas) return;
+      ctx = canvas.getContext('2d');
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
       
-      const header = document.createElement('div');
-      header.innerHTML = `<strong>Quiz:</strong><br><br>`;
-      container.appendChild(header);
+      particles = [];
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+      
+      window.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+      });
+      
+      window.addEventListener('mouseout', () => {
+        mouse.x = null;
+        mouse.y = null;
+      });
+      
+      requestAnimationFrame(animateCanvas);
+    }
 
-      if (!Array.isArray(quiz) || quiz.length === 0) {
-        container.innerHTML += `Could not parse generated quiz. Please try a different topic.`;
+    function resizeCanvas() {
+      if (!canvas) return;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * window.innerWidth;
+        this.y = Math.random() * window.innerHeight;
+        this.vx = (Math.random() - 0.5) * 0.9;
+        this.vy = (Math.random() - 0.5) * 0.9;
+        this.radius = Math.random() * 2 + 1.2;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > canvas.width) this.vx = -this.vx;
+        if (this.y < 0 || this.y > canvas.height) this.vy = -this.vy;
+      }
+      draw(color) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+      }
+    }
+
+    function animateCanvas() {
+      if (!canvas || document.getElementById('landingPage').style.display === 'none') {
+        requestAnimationFrame(animateCanvas);
         return;
       }
-
-      quiz.forEach((item, qIndex) => {
-        const qBlock = document.createElement('div');
-        qBlock.className = 'quiz-block';
-        qBlock.style.marginBottom = '25px';
-
-        const qTitle = document.createElement('div');
-        qTitle.style.fontWeight = 'bold';
-        qTitle.style.marginBottom = '8px';
-        qTitle.textContent = `Q${qIndex + 1}: ${item.question}`;
-        qBlock.appendChild(qTitle);
-
-        const optsDiv = document.createElement('div');
-        optsDiv.style.display = 'flex';
-        optsDiv.style.flexDirection = 'column';
-        optsDiv.style.gap = '6px';
-        optsDiv.style.marginBottom = '12px';
-
-        item.options.forEach((opt) => {
-          const label = document.createElement('label');
-          label.className = 'quiz-option-label';
-          label.style.display = 'flex';
-          label.style.alignItems = 'center';
-          label.style.gap = '8px';
-          label.style.padding = '6px 10px';
-          label.style.borderRadius = '4px';
-          label.style.cursor = 'pointer';
-          label.style.border = '1px solid transparent';
-
-          const radio = document.createElement('input');
-          radio.type = 'radio';
-          radio.name = `quiz_q_${qIndex}`;
-          radio.value = opt;
-
-          label.appendChild(radio);
-          label.append(opt);
-          optsDiv.appendChild(label);
-        });
-        qBlock.appendChild(optsDiv);
-
-        // Individual Check Answer button
-        const checkBtn = document.createElement('button');
-        checkBtn.type = 'button';
-        checkBtn.className = 'btn btn-check';
-        checkBtn.textContent = 'Check Answer';
-        
-        const feedback = document.createElement('div');
-        feedback.style.marginTop = '8px';
-        feedback.style.fontWeight = 'bold';
-
-        checkBtn.addEventListener('click', () => {
-          const selected = optsDiv.querySelector(`input[name="quiz_q_${qIndex}"]:checked`);
-          const allOptions = optsDiv.querySelectorAll('.quiz-option-label');
-
-          // Reset styles
-          allOptions.forEach((lbl) => {
-            lbl.style.backgroundColor = '';
-            lbl.style.borderColor = 'transparent';
-            lbl.style.color = '';
-          });
-
-          if (!selected) {
-            feedback.style.color = '#d96c5b';
-            feedback.textContent = 'Please choose an answer.';
-            return;
-          }
-
-          const chosen = selected.value;
-          const correct = item.answer;
-
-          // Paint correct option green, incorrect red
-          allOptions.forEach((lbl) => {
-            const radVal = lbl.querySelector('input').value;
-            if (radVal === correct) {
-              lbl.style.backgroundColor = '#d1fae5';
-              lbl.style.borderColor = '#34d399';
-              lbl.style.color = '#065f46';
-            } else if (chosen === radVal && chosen !== correct) {
-              lbl.style.backgroundColor = '#fee2e2';
-              lbl.style.borderColor = '#f87171';
-              lbl.style.color = '#991b1b';
-            }
-          });
-
-          if (chosen === correct) {
-            feedback.style.color = '#059669';
-            feedback.innerHTML = '&#9989; Correct!';
-          } else {
-            feedback.style.color = '#dc2626';
-            feedback.innerHTML = `&#10060; Incorrect. Correct answer: ${escapeHTML(correct)}`;
-          }
-        });
-
-        qBlock.appendChild(checkBtn);
-        qBlock.appendChild(feedback);
-        container.appendChild(qBlock);
+      
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const isLight = document.body.classList.contains('light-theme');
+      const particleColor = isLight ? 'rgba(79, 70, 229, 0.5)' : 'rgba(0, 240, 255, 0.6)';
+      const lineColorTemplate = isLight ? '79, 70, 229' : '0, 240, 255';
+      
+      particles.forEach(p => {
+        p.update();
+        p.draw(particleColor);
       });
+      
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < connectionDistance) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(${lineColorTemplate}, ${0.35 * (1 - dist / connectionDistance)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+        
+        if (mouse.x !== null && mouse.y !== null) {
+          const dx = particles[i].x - mouse.x;
+          const dy = particles[i].y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < mouse.radius) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.strokeStyle = `rgba(${lineColorTemplate}, ${0.5 * (1 - dist / mouse.radius)})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+      }
+      
+      requestAnimationFrame(animateCanvas);
     }
 
-    // Learning Recommendations Integration
-    const recommendForm = document.getElementById('recommendForm');
-    const recommendResult = document.getElementById('recommendResult');
-
-    recommendForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const topic = document.getElementById('recommendTopic').value.trim();
-      if (!topic) return;
-
-      setThinking(recommendResult);
-      try {
-        const response = await fetch(`/learn/recommendations?topic=${encodeURIComponent(topic)}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-          recommendResult.innerHTML = `<strong>Error:</strong> ${data.error || 'Failed to fetch recommendations.'}`;
-          return;
-        }
-
-        const title = `<strong>Learning Recommendations for "${escapeHTML(data.topic)}":</strong><br><br>`;
-        recommendResult.innerHTML = title + renderMarkdownLite(data.recommendation);
-      } catch (err) {
-        recommendResult.innerHTML = `<strong>Error:</strong> Network connection error.`;
-      }
-    });
-
-    // Run auth state check on load
-    window.addEventListener('DOMContentLoaded', () => {
-      checkCurrentUser();
-      initCanvasParticles();
-    });
-
-    // Dark/Light Mode Theme Toggle Functions
+    // ============================================================
+    // THEME TOGGLE
+    // ============================================================
     function toggleTheme() {
       const body = document.body;
       const btn = document.getElementById('themeToggleBtn');
@@ -1219,19 +1591,19 @@
       }
     }
 
-    // Apply saved theme preference instantly
     (function() {
       const savedTheme = localStorage.getItem('theme') || 'dark';
       if (savedTheme === 'light') {
         document.body.classList.add('light-theme');
         const btn = document.getElementById('themeToggleBtn');
         if (btn) btn.textContent = '☀️';
-      } else {
-        document.body.classList.remove('light-theme');
-        const btn = document.getElementById('themeToggleBtn');
-        if (btn) btn.textContent = '🌙';
       }
     })();
+
+    window.addEventListener('DOMContentLoaded', () => {
+      checkCurrentUser();
+      initCanvasParticles();
+    });
   </script>
 
 </body>
