@@ -287,17 +287,6 @@
             <button type="submit" id="btnCreateAccount" class="btn btn-full">Create Account</button>
           </form>
         </div>
-        
-        <div id="registerOtpContainer" style="display: none;">
-          <form id="regOtpForm" onsubmit="event.preventDefault(); verifyRegistrationOTP();">
-            <div class="auth-form-group">
-              <label for="regOtp">6-Digit Verification OTP</label>
-              <input type="text" id="regOtp" placeholder="Enter 6-digit Code" maxlength="6" pattern="[0-9]{6}" autocomplete="one-time-code" autofocus>
-            </div>
-            <button type="submit" id="btnVerifyOtp" class="btn btn-full" style="margin-bottom: 10px;">Verify & Start</button>
-            <button type="button" id="btnResendOtp" onclick="resendRegistrationOTP()" class="btn btn-full btn-outline">Resend OTP Code</button>
-          </form>
-        </div>
         <div id="registerStatus" style="margin-top: 12px; font-size: 0.88rem; text-align: center; font-weight: 500;"></div>
       </div>
 
@@ -1295,13 +1284,9 @@
       document.getElementById('regEmail').value = '';
       document.getElementById('regPassword').value = '';
       document.getElementById('regConfirmPassword').value = '';
-      document.getElementById('regOtp').value = '';
       
       document.getElementById('loginError').textContent = '';
       document.getElementById('registerStatus').textContent = '';
-      document.getElementById('registerOtpContainer').style.display = 'none';
-      document.getElementById('registerFieldsContainer').style.display = 'block';
-      pendingVerificationEmail = "";
       
       if (tab === 'login') {
         loginPanel.style.display = 'block';
@@ -1370,7 +1355,7 @@
 
       const origBtnText = submitBtn.textContent;
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Sending OTP to email...';
+      submitBtn.textContent = 'Creating Account...';
 
       try {
         const response = await fetch('/register', {
@@ -1388,102 +1373,16 @@
           return;
         }
 
-        if (data.verification_required) {
-          pendingVerificationEmail = email;
-          document.getElementById('registerFieldsContainer').style.display = 'none';
-          document.getElementById('registerOtpContainer').style.display = 'block';
-          statusDiv.style.color = '#10b981';
-          statusDiv.innerHTML = data.message;
-          const otpInput = document.getElementById('regOtp');
-          otpInput.value = '';
-          otpInput.focus();
-        }
+        statusDiv.style.color = '#10b981';
+        statusDiv.textContent = 'Account created successfully!';
+        showToast('Account created successfully!', '🎉');
+        setTimeout(() => checkCurrentUser(), 600);
       } catch (err) {
         statusDiv.style.color = '#f43f5e';
         statusDiv.textContent = 'Server connection error.';
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = origBtnText;
-      }
-    }
-
-    async function verifyRegistrationOTP() {
-      const otpInput = document.getElementById('regOtp');
-      const otp = otpInput.value.replace(/\D/g, '').trim();
-      const statusDiv = document.getElementById('registerStatus');
-      const verifyBtn = document.getElementById('btnVerifyOtp');
-      
-      statusDiv.textContent = '';
-      statusDiv.style.color = '#f43f5e';
-
-      if (!otp || otp.length < 6) {
-        statusDiv.textContent = 'Please enter the 6-digit verification code from your email.';
-        return;
-      }
-
-      const origBtnText = verifyBtn.textContent;
-      verifyBtn.disabled = true;
-      verifyBtn.textContent = 'Verifying...';
-
-      try {
-        const response = await fetch('/verify-registration', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: pendingVerificationEmail, otp })
-        });
-        const data = await response.json();
-
-        if (!response.ok) {
-          statusDiv.textContent = data.error || 'Verification failed.';
-          verifyBtn.disabled = false;
-          verifyBtn.textContent = origBtnText;
-          return;
-        }
-
-        statusDiv.style.color = '#10b981';
-        statusDiv.textContent = 'Account verified and ready!';
-        showToast('Account created & verified!', '🎉');
-        setTimeout(() => checkCurrentUser(), 600);
-      } catch (err) {
-        statusDiv.textContent = 'Server connection error.';
-      } finally {
-        verifyBtn.disabled = false;
-        verifyBtn.textContent = origBtnText;
-      }
-    }
-
-    async function resendRegistrationOTP() {
-      const statusDiv = document.getElementById('registerStatus');
-      const resendBtn = document.getElementById('btnResendOtp');
-      
-      const origBtnText = resendBtn.textContent;
-      resendBtn.disabled = true;
-      resendBtn.textContent = 'Sending new OTP...';
-      statusDiv.textContent = '';
-
-      try {
-        const response = await fetch('/resend-registration-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: pendingVerificationEmail })
-        });
-        const data = await response.json();
-        if (!response.ok) {
-          statusDiv.style.color = '#f43f5e';
-          statusDiv.innerHTML = data.error || 'Resend failed.';
-          return;
-        }
-        statusDiv.style.color = '#10b981';
-        statusDiv.innerHTML = data.message;
-        const otpInput = document.getElementById('regOtp');
-        otpInput.value = '';
-        otpInput.focus();
-      } catch (err) {
-        statusDiv.style.color = '#f43f5e';
-        statusDiv.textContent = 'Server connection error.';
-      } finally {
-        resendBtn.disabled = false;
-        resendBtn.textContent = origBtnText;
       }
     }
 

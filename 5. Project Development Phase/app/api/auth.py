@@ -132,7 +132,7 @@ def get_current_user_from_request(request: Request, db):
     return guest
 
 @router.post("/register")
-async def register_user(request: Request):
+async def register_user(request: Request, response: Response):
     db = get_db_session()
     try:
         data = await request.json()
@@ -153,149 +153,28 @@ async def register_user(request: Request):
         if existing_user:
             return JSONResponse(status_code=400, content={"error": "Account already exists. Please Sign In."})
             
-        # Generate 6-digit OTP
-        generated_otp = f"{random.randint(100000, 999999)}"
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
-        expiry = datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
         
-        # Store in transient registration dictionary
-        pending_registrations[email] = {
-            "name": name,
-            "password": hashed_password,
-            "otp": generated_otp,
-            "valid_otps": [{"code": generated_otp, "expiry": expiry}],
-            "expiry": expiry
-        }
+        # Create user immediately
+        new_user = models.User(
+            name=name,
+            email=email,
+            password=hashed_password
+        )
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
         
-        # Trigger OTP send via email
-        sent_via_smtp = send_otp_email(email, generated_otp)
-        
-        print(f"\n=======================================================")
-        print(f"🔑 [EduGenie Verification OTP] For: {email} -> CODE: {generated_otp}")
-        print(f"=======================================================\n")
-        
-        if not sent_via_smtp:
-            pending_registrations.pop(email, None)
-            return JSONResponse(
-                status_code=400,
-                content={
-                    "error": "Failed to send verification code to your email. Please check that valid SMTP credentials (SMTP_USER and SMTP_PASSWORD) are configured in the .env file."
-                }
-            )
-            
+        # Log user in directly via session cookie
+        response.set_cookie(key="user_id", value=str(new_user.user_id), httponly=True)
         return {
-            "verification_required": True,
-            "email": email,
-            "message": f"Verification OTP has been sent to <b>{email}</b>. Please check your inbox or spam folder."
+            "message": "Account created successfully!",
+            "user": {"name": new_user.name, "email": new_user.email}
         }
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": f"Registration initiation failed: {str(e)}"})
+        return JSONResponse(status_code=500, content={"error": f"Registration failed: {str(e)}"})
     finally:
         db.close()
-
-@router.post("/verify-registration")
-async def verify_registration(request: Request, response: Response):
-    db = get_db_session()
-    try:
-        data = await request.json()
-        email = str(data.get("email", "")).strip().lower()
-        raw_otp = str(data.get("otp", "")).strip()
-        submitted_otp = re.sub(r'\D', '', raw_otp)
-        
-        if not email or not submitted_otp:
-            return JSONResponse(status_code=400, content={"error": "Email and 6-digit verification OTP are required."})
-            
-        pending = pending_registrations.get(email)
-        if not pending:
-            return JSONResponse(status_code=400, content={"error": "No pending registration found for this email. Please register again."})
-            
-        # Collect all unexpired valid OTPs for this registration
-        valid_otps_list = pending.get("valid_otps", [])
-        if not valid_otps_list and "otp" in pending:
-            valid_otps_list = [{"code": pending["otp"], "expiry": pending.get("expiry", datetime.datetime.utcnow())}]
-            
-        now = datetime.datetime.utcnow()
-        active_codes = [item["code"] for item in valid_otps_list if now <= item["expiry"]]
-        
-        print(f"🔍 [OTP Verification Check] Email: '{email}', Received: '{submitted_otp}', Active valid OTPs: {active_codes}")
-        
-        if not active_codes:
-            pending_registrations.pop(email, None)
-            return JSONResponse(status_code=400, content={"error": "Verification code has expired. Please request a new OTP."})
-            
-        if submitted_otp not in active_codes:
-            return JSONResponse(status_code=400, content={"error": "Incorrect verification code. Please check your latest email and try again."})
-            
-        # OTP is correct! Create or verify user database entry
-        existing = db.query(models.User).filter(models.User.email == email).first()
-        if not existing:
-            new_user = models.User(
-                name=pending["name"],
-                email=email,
-                password=pending["password"]
-            )
-            db.add(new_user)
-            db.commit()
-            db.refresh(new_user)
-            user_id = new_user.user_id
-            user_name = new_user.name
-        else:
-            user_id = existing.user_id
-            user_name = existing.name
-        
-        # Remove from transient registrations
-        pending_registrations.pop(email, None)
-        
-        # Log user in directly
-        response.set_cookie(key="user_id", value=str(user_id), httponly=True)
-        return {"message": "Account created and verified successfully!", "user": {"name": user_name, "email": email}}
-    except Exception as e:
-        return JSONResponse(status_code=500, content={"error": f"Verification failed: {str(e)}"})
-    finally:
-        db.close()
-
-@router.post("/resend-registration-otp")
-async def resend_registration_otp(request: Request):
-    try:
-        data = await request.json()
-        email = str(data.get("email", "")).strip().lower()
-        
-        if not email:
-            return JSONResponse(status_code=400, content={"error": "Email is required to resend OTP."})
-            
-        pending = pending_registrations.get(email)
-        if not pending:
-            return JSONResponse(status_code=400, content={"error": "No pending registration found. Please start sign up from the beginning."})
-            
-        # Regenerate OTP
-        new_otp = f"{random.randint(100000, 999999)}"
-        new_expiry = datetime.datetime.utcnow() + datetime.timedelta(minutes=10)
-        pending["otp"] = new_otp
-        pending["expiry"] = new_expiry
-        
-        if "valid_otps" not in pending:
-            pending["valid_otps"] = []
-        pending["valid_otps"].append({"code": new_otp, "expiry": new_expiry})
-        
-        # Send
-        sent_via_smtp = send_otp_email(email, new_otp)
-        print(f"\n=======================================================")
-        print(f"🔑 [EduGenie Resent OTP] For: {email} -> CODE: {new_otp}")
-        print(f"=======================================================\n")
-        
-        if not sent_via_smtp:
-            return JSONResponse(
-                status_code=400,
-                content={
-                    "error": "Failed to send verification code. Please check your SMTP settings in .env."
-                }
-            )
-            
-        return {
-            "message": f"A new verification OTP has been sent to <b>{email}</b>. Please check your email inbox."
-        }
-    except Exception as e:
-        return JSONResponse(status_code=500, content={"error": f"Resending OTP failed: {str(e)}"})
 
 
 @router.post("/login")
